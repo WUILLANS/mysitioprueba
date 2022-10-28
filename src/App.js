@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Hola mi sitio react WUILLANS
         </a>
       </header>
     </div>

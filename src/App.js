@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
-import { useState } from 'react';
+import { useState } from "react";
+import AppForm from "./componente/AppForm";
+
 
 function App() {
-////////////////////READ//////////////////////
-const[idActual,setIdActual] = useState('');
-const[docsBD,setdocsBD] = useState([]);
-//////////////////////LECTURA A BD/////////////////////////
-const fnRead = () => {
-  console.log("lectura a BD");
-}
-//////////////////////LECTURA A BD/////////////////////////
-const fnDelete = () => {
-  console.log("Eliminar un registro");
-}
+  const [idActual, setIdActual]= useState('');
+  const [docsBD, setDocsBD] =useState([]);
 
+ <h1>HOLA</h1>
+//////LECTURA A BASE DE DATOS/////////////////////////
+  const fnRead = () => {
+    console.log("Lectura a BD");
+  }
+  const fnDelet = () => {
+    console.log("Eliminar un registro");
+  }
   return (
-    <div style={{background:"greenyellow", width:358px}}>
-     <AppFor{...{idActual,setIdActual,fnRead}} /> 
-    </div>
+    <center><div style={{background:"orange"}}>
+      <AppForm{...{idActual,setIdActual,fnRead}}/>
+      
+    </div></center>
   );
 }
 

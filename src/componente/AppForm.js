@@ -7,7 +7,7 @@ const AppForm = (props) => {
 
   ////////REGISTRAR Y ACTUALIZAR////
 
-  const camposRegistro = {nombre:"",edad:'',genero:''}
+  const camposRegistro = {URL:"",Nombre:'',Descripcion:''}
   const [objeto, setObjeto] = useState(camposRegistro);
 
   const handlesStatusChange = (e) => {
@@ -20,7 +20,7 @@ const AppForm = (props) => {
       ///////////////REGISTRAR/////////////////////
       if(props.idActual===""){
           if(validarForm()){
-             addDoc(collection(db, 'persona'), objeto);
+             addDoc(collection(db, 'favoritos'), objeto);
              console.log('Se guardo....');
              
           }else{
@@ -33,18 +33,18 @@ const AppForm = (props) => {
   };
 ///////////////////VALIDACION///////////////////////
   const validarForm = () => {
-      if(objeto.nombre==="" || /^\s/.test(objeto.nombre)){
-          alert("Escriba nombres....");
+      if(objeto.URL==="" || /^\s/.test(objeto.URL)){
+          alert("Escriba URL....");
           return false;
 
       }
-      if(objeto.edad==="" || /^\s/.test(objeto.edad)){
-        alert("Escriba edad....");
+      if(objeto.Nombre==="" || /^\s/.test(objeto.Nombre)){
+        alert("Escriba nombre....");
         return false;
 
     }
-    if(objeto.genero==="" || /^\s/.test(objeto.genero)){
-        alert("Escriba genero....");
+    if(objeto.Descripcion==="" || /^\s/.test(objeto.Descripcion)){
+        alert("Escriba descripcion....");
         return false;
 
     }
@@ -61,9 +61,9 @@ const AppForm = (props) => {
     <div style={{background:"#123748",height:"489px",width:"350px",boxShadow: "7px 13px 37px #000", paddingTop:"7px"}}>
     <h3 style={{fontSize: "30px", marginBottom: "0px"}}>Registro</h3>
     <form onSubmit={handleSubmit} style={{ padding:"40px", fontFamily: "calibri"}}>
-      <input style={{width:"100%", background:"#123748", padding:"10px", borderRadius:"4px", marginBottom:"20px", border: "2px solid #1f53c5", fontFamily: "calibri", fontSize:"18px", color:"white"}} type="text" name='nombre' placeholder='Ingrese su nombre' onChange={handlesStatusChange} value={objeto.nombre}/> <br />
-      <input style={{width:"100%", background:"#123748", padding:"10px", borderRadius:"4px", marginBottom:"20px", border: "2px solid #1f53c5", fontFamily: "calibri", fontSize:"18px", color:"white"}} type="text" name='edad' placeholder='Ingrese su edad' onChange={handlesStatusChange} value={objeto.edad}/> <br />
-      <input type="text" name='genero' placeholder='Ingrese su genero' onChange={handlesStatusChange} value={objeto.genero}></input>
+      <input style={{width:"100%", background:"#123748", padding:"10px", borderRadius:"4px", marginBottom:"20px", border: "2px solid #1f53c5", fontFamily: "calibri", fontSize:"18px", color:"white"}} type="text" name='URL' placeholder='Ingrese su URL' onChange={handlesStatusChange} value={objeto.URL}/> <br />
+      <input style={{width:"100%", background:"#123748", padding:"10px", borderRadius:"4px", marginBottom:"20px", border: "2px solid #1f53c5", fontFamily: "calibri", fontSize:"18px", color:"white"}} type="text" name='Nombre' placeholder='Ingrese su Nombre' onChange={handlesStatusChange} value={objeto.Nombre}/> <br />
+      <input type="text" name='Descripcion' placeholder='Ingrese su Descripcion' onChange={handlesStatusChange} value={objeto.Descripcion}></input>
       <button style={{width:"100%", background:"#1f53c5", border: "none",padding:"12px", color:"white", margin:"16px 15px", fontSize: "18px", fontFamily: "calibri"}}>
       {props.idActual === ""? "Guardar" : "Actualizar"}
       </button>

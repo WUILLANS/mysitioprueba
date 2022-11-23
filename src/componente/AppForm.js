@@ -1,75 +1,110 @@
-import {collection,doc,getDoc,addDoc,updateD} from "firebase/firestore";
-import React  from 'react';
-import { useState } from "react";
-import firibase, {db} from './firebase';
+import { async } from '@firebase/util';
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import React, {useState,useEffect} from 'react'
+import {db} from "./firebase";
 
 const AppForm = (props) => {
+    ///////////////////////////////////////////////////////////////////////
+    ////////// CREAR - fnCrear - Guardar //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    const camposRegistro = {nombre:"", edad:"", genero:""};
+    const [objeto, setObjeto] = useState(camposRegistro);
 
-  ////////REGISTRAR Y ACTUALIZAR////
+    const handleStatusChange = (e) => {      //Manejar cambios en form
+        const {name, value} = e.target;
+        setObjeto({...objeto, [name]:value });
+        console.log(objeto);
+    };
 
-  const camposRegistro = {URL:"",Nombre:'',Descripcion:''}
-  const [objeto, setObjeto] = useState(camposRegistro);
+    const handleSubmit = async(e) => {
+      try {
+        e.preventDefault();
 
-  const handlesStatusChange = (e) => {
-      const {name,value} = e.target;
-      setObjeto({...objeto,[name]:value });
-  }
-  const handleSubmit = async (e) => {
-      e.preventDefault();
+        try {
+            if(props.idActual === ""){
+                if(validarForm()){
+                    addDoc(collection(db, 'persona'), objeto);
+                    console.log("Se guardo registro en DB...");
+                }else{
+                    console.log("NO se guardo...");
+                }
+            }else{
+                //////ACTUALIZAR//////
+                await updateDoc(doc(collection(db, "persona"), props.idActual),objeto);
+                console.log("ACTUALIZAR REGISTRO...");
+                props.setIdActual('')
+            }
+            setObjeto(camposRegistro);
 
-      ///////////////REGISTRAR/////////////////////
-      if(props.idActual===""){
-          if(validarForm()){
-             addDoc(collection(db, 'favoritos'), objeto);
-             console.log('Se guardo....');
-             
-          }else{
-              console.log('no se guardo...');
-          }
-      }else{
+      } catch (error) {
+        console.error();
       }
-      setObjeto(camposRegistro);
-          
-  };
-///////////////////VALIDACION///////////////////////
-  const validarForm = () => {
-      if(objeto.URL==="" || /^\s/.test(objeto.URL)){
-          alert("Escriba URL....");
-          return false;
 
-      }
-      if(objeto.Nombre==="" || /^\s/.test(objeto.Nombre)){
-        alert("Escriba nombre....");
-        return false;
-
-    }
-    if(objeto.Descripcion==="" || /^\s/.test(objeto.Descripcion)){
-        alert("Escriba descripcion....");
-        return false;
-
-    }
+           
+        } catch (error) {
+            console.error();
+        } 
+    };
     
-      return true;
+    const validarForm = () => {
+         if(objeto.nombre === ""){
+            alert("Escriba nombre...");
+            return false;
+         }
+         return true;
+    };
 
-  };
+    useEffect(() => {
+        if(props.idActual ===""){
+           setObjeto({...camposRegistro});
 
-/////////OBTENER REGISTRO POR idActual
+        }else{
+        obtenerDatosPorId(props.idActual);
+        }
+    }, [props.idActual]);
+
+    const obtenerDatosPorId = async(xId) => {
+         const objPorId = doc (db, "persona", xId);
+         const docPorId = await getDoc(objPorId);
+         if (docPorId.exists()){
+          setObjeto(docPorId.data());
+
+         }else{
+            console.log("no hay datos en DB.....")
+
+         }
+    };
 
 
-//console.log(objeto);
-  return (
-    <div style={{background:"#123748",height:"489px",width:"350px",boxShadow: "7px 13px 37px #000", paddingTop:"7px"}}>
-    <h3 style={{fontSize: "30px", marginBottom: "0px"}}>Registro</h3>
-    <form onSubmit={handleSubmit} style={{ padding:"40px", fontFamily: "calibri"}}>
-      <input style={{width:"100%", background:"#123748", padding:"10px", borderRadius:"4px", marginBottom:"20px", border: "2px solid #1f53c5", fontFamily: "calibri", fontSize:"18px", color:"white"}} type="text" name='URL' placeholder='Ingrese su URL' onChange={handlesStatusChange} value={objeto.URL}/> <br />
-      <input style={{width:"100%", background:"#123748", padding:"10px", borderRadius:"4px", marginBottom:"20px", border: "2px solid #1f53c5", fontFamily: "calibri", fontSize:"18px", color:"white"}} type="text" name='Nombre' placeholder='Ingrese su Nombre' onChange={handlesStatusChange} value={objeto.Nombre}/> <br />
-      <input type="text" name='Descripcion' placeholder='Ingrese su Descripcion' onChange={handlesStatusChange} value={objeto.Descripcion}></input>
-      <button style={{width:"100%", background:"#1f53c5", border: "none",padding:"12px", color:"white", margin:"16px 15px", fontSize: "18px", fontFamily: "calibri"}}>
-      {props.idActual === ""? "Guardar" : "Actualizar"}
-      </button>
-    </form>
-    </div>
-  )
+
+
+    ///////////////////////////////////////////////////////////////////////
+    ////////// UPDATE - fnUpdate - Actualizar /////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+
+    return (
+        <div style={{background:"orange", padding:"10px", margin:"10px"}}>
+            <h3>CREAR / UPDATE</h3>
+            <form onSubmit={handleSubmit}>
+                <input type="text" name='nombre' placeholder='Nombres...' 
+                    onChange={handleStatusChange} value={objeto.nombre}
+                />
+
+                <input type="text" name='edad' placeholder='Edad...' 
+                    onChange={handleStatusChange} value={objeto.edad}
+                />
+
+                <input type="text" name='genero' placeholder='Genero...' 
+                    onChange={handleStatusChange} value={objeto.genero}
+                />
+                <button>
+                    {props.idActual === "" ? "Guardar" : "Actualizar" }
+                </button>
+            </form>
+            
+        </div>
+    )
 }
 
-export default AppForm;
+export default AppForm
+

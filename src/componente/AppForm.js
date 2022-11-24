@@ -1,7 +1,9 @@
 import { async } from '@firebase/util';
-import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, limitToLast, updateDoc } from 'firebase/firestore';
 import React, {useState,useEffect} from 'react'
 import {db} from "./firebase";
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.ccs';
 
 const AppForm = (props) => {
     ////////////////////////////////////////////////////////////////////////////
@@ -31,9 +33,12 @@ const AppForm = (props) => {
             }else{
                 //////ACTUALIZAR//////
                 await updateDoc(doc(collection(db, "persona"), props.idActual),objeto);
-                console.log("ACTUALIZAR REGISTRO...");
-                props.setIdActual('')
-            }
+                //console.log("ACTUALIZAR REGISTRO...");{
+                toast("se actualizo con exito...",{
+                type:'info',
+                autoClose: 2000
+                //props.setIdActual('')//
+            })
             setObjeto(camposRegistro);
 
       } catch (error) {

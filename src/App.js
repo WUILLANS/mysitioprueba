@@ -1,5 +1,5 @@
 import { async } from "@firebase/util";
-import { collection, onSnapshot, where, query, deleteDoc } from "firebase/firestore";
+import { collection, onSnapshot, where, query, deleteDoc, limitToLast } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import AppForm from "./componente/AppForm";
 import {db} from "./componente/firebase";
@@ -37,9 +37,11 @@ function App() {
 
   const fnDelete = async(xId) => {
   if(window.confirm("esta seguro que desea elimnar...?")){
-    await deleteDoc (doc(db, "persona", xId))////////aquii revisar de la guia////////
-
-  }
+    await deleteDoc (doc(db, "persona", xId));////////aquii revisar de la guia////////
+    toast("Documento eliminado con existo",{
+    type:'error',
+    autoclase:2000
+  })
 
 
   if(window.confirm)

@@ -1,17 +1,20 @@
-import { async } from "@firebase/util";
-import { collection, onSnapshot, where, query, deleteDoc, limitToLast } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { collection, onSnapshot, where, query, deleteDoc} from "firebase/firestore";
+import react, {useEffect, useState} from "react";
 import AppForm from "./componente/AppForm";
 import {db} from "./componente/firebase";
+import {toast} from 'react-toastify';
+import {ToasContainer} from 'react-toastify'
+import 'react-toastify/dist/react-toastify';
 
-function App() {  
+function App() 
   ///////////////////////////////////////////////////////////////////////
   ////////// READ - fnRead - LECTURA A BD ///////////////////////////////
   ///////////////////////////////////////////////////////////////////////
   const [docsBD, setDocsBD] = useState([]);
-  //console.log(docsBD);
+ /////console.log(docsBD);
 
   const fnRead = () => {
+    try{
     const xColeccionConQuery = query(collection(db, "persona"));
     //const xColeccionConQuery = query(collection(db, "persona"), where("nombre", "!=", ""));
     const unsubcribe = onSnapshot(xColeccionConQuery, (xDatosBD) => {
@@ -22,52 +25,82 @@ function App() {
 
       setDocsBD(xDoc);
     });
-  }
 
-  fnRead();
-/*
+
+
+  } catch (error) {
+    console.error(error)
+
+  }
+}
+ // fnRead();
+
   useEffect( () => {
-    
+    fnRead();
   }, [] );
-  */
+
+  
   ///////////////////////////////////////////////////////////////////////
   ////////// DELETE - fnDelete - Eliminar registros /////////////////////
   ///////////////////////////////////////////////////////////////////////
   const [idActual, setIdActual] = useState("");
 
   const fnDelete = async(xId) => {
-  if(window.confirm("esta seguro que desea elimnar...?")){
-    await deleteDoc (doc(db, "persona", xId));////////aquii revisar de la guia////////
-    toast("Documento eliminado con existo",{
-    type:'error',
-    autoclase:2000
+    if(window.confirm("Confirma para elimnar")){
+      await deleteDoc (doc(db, "persona", xId));////////aquii revisar de la guia////////
+      toast("Documento eliminado con existo",{
+        type:'error',
+        autoclose:2000
   })
 
 
   if(window.confirm)
 
-    console.log("Se elimino...");
+  console.log("Se elimino...");
   };
 
-  return (
-    <div style={{width:"350px", background:"greenyellow", padding:"10px"}}>
-      <h1>sitiocopia2a3 (App.js)</h1>
-      <h3>READ / DELETE</h3>
-      <AppForm {...{idActual, setIdActual, fnRead}} />
-      {
-        docsBD.map((p) => 
-          <p key={p.id}>
-           {p.nombre}
-           <span onClick= {() => fnDelete(p.id)} > x </span>
-           ......
-           <span onClick= {() => setIdActual(p.id)} > A </span>
-  
-             
-          </p> 
-        )
-      }      
+  return(
+    <div className="container text-center">
+      <div className="card bs-secondary p-3 mt-3">
+        <ToastContainer/>
+        
+        <div className="col-md-12 p-2">
+          <div className="card mb-1">
+            <h1>mysitioprueba(App.js)</h1>
+          </div>
+        </div>
+        <div className="col-md-12 p-2">
+          <AppForm {...{ idActual, setIdActual }} />
+        </div>
+        <div className="col-md-12 p-2">
+          {
+            docsBD.map((p) => 
+            <div className="card mb-1" key={p.id}>
+              <div className="card-body">
+                <div className="d-flex justify-content-between">
+                  <h4>N.      - {p.nombre} </h4>
+                  <div>
+                    <i className="material-icons text-danger"
+                     onClick={() => fnDelete(p.id)}>close</i>
+                     ......
+                    <i className="material-icons text-warning"
+                     onClick={() => setIdActual(p.id)}> create</i>
+                  </div>
+               </div>
+               <div className="d-flex justify-contenet">
+                 <span>Edad: {p.edad} </span>.....
+                 <a href="#"> Genero: {p.genero}</a>
+               </div>
+             </div>
+           </div>
+          )
+        }
+     </div>
+
     </div>
+  </div>
   );
 }
+   export default App;
 
-export default App;
+    
